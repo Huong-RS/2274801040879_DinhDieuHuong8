@@ -1,0 +1,130 @@
+﻿<h2>Chỉnh sửa Nhân viên</h2>
+
+<div id="editNhanVienForm">
+    <div class="form-group">
+        <label for="Tt">TT</label>
+        <input type="text" id="Tt" name="Tt" class="form-control" required>
+        <span class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label for="Cccd">CCCD</label>
+        <input type="text" id="Cccd" name="Cccd" class="form-control" required>
+        <span class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label for="Hodem">Họ đệm</label>
+        <input type="text" id="Hodem" name="Hodem" class="form-control" required>
+        <span class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label for="Ten">Tên</label>
+        <input type="text" id="Ten" name="Ten" class="form-control" required>
+        <span class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label for="Nickname">Nickname</label>
+        <input type="text" id="Nickname" name="Nickname" class="form-control" required>
+        <span class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label for="Email">Email</label>
+        <input type="email" id="Email" name="Email" class="form-control" required>
+        <span class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label for="Dienthoai">Điện thoại</label>
+        <input type="text" id="Dienthoai" name="Dienthoai" class="form-control" required>
+        <span class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label for="ChucVu">ChucVu</label>
+        <input type="text" id="ChucVu" name="ChucVu" class="form-control" required>
+        <span class="text-danger"></span>
+    </div>
+    <button type="button" onclick="updateNhanVien()" class="btn btn-primary">Lưu</button>
+    <button type="button" onclick="closeForm()" class="btn btn-secondary">Hủy</button>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const pathArray = window.location.pathname.split('/');
+        // const tt = pathArray[pathArray.length - 1];
+        const tt = pathArray.pop();
+
+        // Check if 'tt' is correctly retrieved
+        if (!tt) {
+            console.error('Error: Missing or invalid "tt" parameter in URL');
+            return;
+        }
+
+        fetch(`/api/NhanVien/${tt}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById('Tt').value = data.Tt;
+                document.getElementById('Cccd').value = data.Cccd;
+                document.getElementById('Hodem').value = data.Hodem;
+                document.getElementById('Ten').value = data.Ten;
+                document.getElementById('Nickname').value = data.Nickname;
+                document.getElementById('Email').value = data.Email;
+                document.getElementById('Dienthoai').value = data.Dienthoai;
+                document.getElementById('ChucVu').value = data.ChucVu;
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    });
+
+    function closeForm() {
+        window.location.href = '/NhanVienView/Index';
+    }
+
+    function updateNhanVien() {
+        const tt = document.getElementById('Tt').value;
+        const cccd = document.getElementById('Cccd').value;
+        const hodem = document.getElementById('Hodem').value;
+        const ten = document.getElementById('Ten').value;
+        const nickname = document.getElementById('Nickname').value;
+        const email = document.getElementById('Email').value;
+        const dienthoai = document.getElementById('Dienthoai').value;
+        const chucvu = document.getElementById('ChucVu').value;
+
+        const nv = {
+            Tt: tt,
+            Cccd: cccd,
+            Hodem: hodem,
+            Ten: ten,
+            Nickname: nickname,
+            Email: email,
+            Dienthoai: dienthoai,
+            ChucVu : chucvu,
+        };
+
+        fetch(`/api/NhanVien/${tt}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(nv)
+        })
+            .then(response => response.json())
+            .then(data => {
+                alert('NhanVien updated successfully!');
+                console.log('Success:', data);
+                window.location.href = '/NhanVienView/Index'; // Redirect to index page after successful submission
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    }
+</script>

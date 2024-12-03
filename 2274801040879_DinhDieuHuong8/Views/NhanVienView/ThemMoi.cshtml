@@ -1,0 +1,116 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thêm mới Nhân viên</title>
+    <!-- Bao gồm các thư viện CSS và JS nếu cần -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Thêm mới Nhân viên</h2>
+        <div id="addNhanVienForm">
+            <div class="form-group">
+                <label for="Tt">TT</label>
+                <input type="text" id="Tt" name="Tt" class="form-control" required>
+                <span class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="Cccd">CCCD</label>
+                <input type="text" id="Cccd" name="Cccd" class="form-control" required>
+                <span class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="Hodem">Họ đệm</label>
+                <input type="text" id="Hodem" name="Hodem" class="form-control" required>
+                <span class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="Ten">Tên</label>
+                <input type="text" id="Ten" name="Ten" class="form-control" required>
+                <span class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="Nickname">Nickname</label>
+                <input type="text" id="Nickname" name="Nickname" class="form-control" required>
+                <span class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="Email">Email</label>
+                <input type="email" id="Email" name="Email" class="form-control" required>
+                <span class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="Dienthoai">Điện thoại</label>
+                <input type="text" id="Dienthoai" name="Dienthoai" class="form-control" required>
+                <span class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="ChucVu">ChucVu</label>
+                <input type="text" id="ChucVu" name="ChucVu" class="form-control" required>
+                <span class="text-danger"></span>
+            </div>
+            <button type="button" onclick="submitNhanVien()" class="btn btn-primary">Lưu</button>
+            <button type="button" onclick="closeForm()" class="btn btn-secondary">Hủy</button>
+        </div>
+    </div>
+
+    <script>
+        function closeForm() {
+            window.location.href = '/NhanVienView/Index';
+        }
+
+        function submitNhanVien() {
+            const tt = document.getElementById('Tt').value;
+            const cccd = document.getElementById('Cccd').value;
+            const hodem = document.getElementById('Hodem').value;
+            const ten = document.getElementById('Ten').value;
+            const nickname = document.getElementById('Nickname').value;
+            const email = document.getElementById('Email').value;
+            const dienthoai = document.getElementById('Dienthoai').value;
+            const chucvu = document.getElementById('ChucVu').value;
+
+            const nv = {
+                Tt: tt,
+                Cccd: cccd,
+                Hodem: hodem,
+                Ten: ten,
+                Nickname: nickname,
+                Email: email,
+                Dienthoai: dienthoai,
+                ChucVu: chucvu,
+            };
+
+            fetch('/api/NhanVien', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(nv)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(error => { throw new Error(error.error); });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    alert('Nhân viên đã được thêm thành công!');
+                    console.log('Success:', data);
+                    window.location.href = '/NhanVienView/Index';
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    alert('Error: ' + error.message);
+                });
+        }
+    </script>
+</body>
+
+</html>

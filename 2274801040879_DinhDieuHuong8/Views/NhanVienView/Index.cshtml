@@ -1,0 +1,183 @@
+﻿<h2>Danh sách Nhân viên</h2>
+
+<div>
+    <button class="btn btn-success btn-sm" id="Nhan-vien-add">Thêm mới</button>
+</div>
+
+<div>
+    <button class="btn btn-success btn-sm" id="Nhan-vien-sort" onclick="sort()">Sap xep</button>
+</div>
+<div id="Nhan-vien-list">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Họ đệm</th>
+                <th>Tên</th>
+                <th>CCCD</th>
+                <th>Email</th>
+                <th>Điện thoại</th>
+                <th>Chức Vụ</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody id="Nhan-vien-list-body"></tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script src='@Url.Content("../statics/js/jquery-3.7.1.min.js")'></script>
+}
+
+
+
+<script>
+    let dsnv = [];
+    fetch('/api/NhanVien')
+        .then(response => response.json())
+        .then(data => {
+            dsnv = data;
+            const NhanVienListContainer = document.getElementById('Nhan-vien-list-body');
+            NhanVienListContainer.innerHTML = '';
+
+            data.forEach(NhanVien => {
+                const NhanVienItem = document.createElement('tr');
+                NhanVienItem.innerHTML = `
+                            <td>${NhanVien.Tt}</td>
+                            <td>${NhanVien.Hodem}</td>
+                            <td>${NhanVien.Ten}</td>
+                            <td>${NhanVien.Cccd}</td>
+                            <td>${NhanVien.Email}</td>
+                            <td>${NhanVien.Dienthoai}</td>
+                            <td>${NhanVien.ChucVu}</td>
+                            <td>
+                                <button class="btn btn-info btn-sm" onclick="viewDetail(${NhanVien.Tt})">Xem chi tiết</button>
+                                <button class="btn btn-warning btn-sm" onclick="editNhanVien(${NhanVien.Tt})">Chỉnh sửa</button>
+                                <button class="btn btn-danger btn-sm" onclick="deleteNhanVien(${NhanVien.Tt})">Xóa</button>
+                            </td>
+                            `;
+                NhanVienListContainer.appendChild(NhanVienItem);
+            });
+        })
+        .catch(error => console.error('Error:', error));
+
+    document.getElementById('Nhan-vien-add').addEventListener('click',
+        function () {
+            window.location.href = '/NhanVienView/ThemMoi';
+        });
+
+    function viewDetail(tt) {
+        window.location.href = `/NhanVienView/ChiTiet/${tt}`;
+    }
+
+    function editNhanVien(tt) {
+        window.location.href = `/NhanVienView/ChinhSua/${tt}`;
+    }
+
+    function deleteNhanVien(tt) {
+        if (confirm('Bạn có chắc chắn muốn xóa Nhân viên này?')) {
+            fetch(`/api/NhanVien/${tt}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message === 'Delete successful') {
+                        alert('Nhân viên đã được xóa thành công!');
+                        console.log("Xoa thanh công")
+                        window.location.href = '/NhanVienView/Index';
+                    } else {
+                        alert('Không thể xóa nhân viên này. ' + data.error);
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        }
+    }
+    function sort(sort_field, sort_type) {
+        dsnv.sort((a, b) => {
+            // Kiểm tra xem giá trị của trường sắp xếp có phải là chuỗi không
+            if (typeof a[sort_field] === 'string') {
+                // Nếu kiểu sắp xếp là giảm dần
+                if (sort_type === "des") {
+                    // So sánh chuỗi và trả về kết quả để sắp xếp giảm dần
+                    return b[sort_field].toLowerCase().localeCompare(a[sort_field].toLowerCase());
+                } else {
+                    // Nếu kiểu sắp xếp không phải giảm dần (tức là tăng dần), so sánh chuỗi và trả về kết quả để sắp xếp tăng dần
+                    return a[sort_field].toLowerCase().localeCompare(b[sort_field].toLowerCase());
+                }
+            } else {
+                // Nếu giá trị của trường sắp xếp không phải là chuỗi (tức là số), so sánh trực tiếp để sắp xếp
+                if (sort_type === "des") {
+                    // Sắp xếp giảm dần
+                    return b[sort_field] - a[sort_field];
+                } else {
+                    // Sắp xếp tăng dần
+                    return a[sort_field] - b[sort_field];
+                }
+            }
+        });
+        console.log(dsnv);
+
+        reload(dsnv);
+    }
+
+
+    function reload(dsnv) {
+        $("#Nhan-vien-list-body").empty();
+
+        const NhanVienListSort = document.getElementById('Nhan-vien-list-body');
+        NhanVienListSort.innerHTML = '';
+
+        dsnv.forEach(NhanVien => {
+            const NhanVienItem = document.createElement('tr');
+            NhanVienItem.innerHTML = `
+                                    <td>${sinhVien.Tt}</td>
+                                    <td>${sinhVien.Hodem}</td>
+                                    <td>${sinhVien.Ten}</td>
+                                    <td>${sinhVien.Nickname}</td>
+                                    <td>${sinhVien.Cccd}</td>
+                                    <td>${sinhVien.Email}</td>
+                                    <td>${sinhVien.Dienthoai}</td>
+                                    <td>${sinhVien.Diem_tichluy}</td>
+                                    <td>${sinhVien.Diem_renluyen}</td>
+                                    <td>
+                                        <button class="btn btn-info btn-sm" onclick="viewDetail(${sinhVien.Tt})">Xem</button>
+                                        <button class="btn btn-warning btn-sm" onclick="editStudent(${sinhVien.Tt})">Sửa</button>
+                                        <button class="btn btn-danger btn-sm" onclick="deleteStudent(${sinhVien.Tt})">Xóa</button>
+                                    </td>
+                                    `;
+            NhanVienListSort.appendChild(NhanVienItem);
+        });
+    }
+
+    // Gọi qua API để sắp xếp
+    function oder(sort_field, sort_type) {
+        // // Sử dụng Fetch để gọi API
+        // fetch(`/api/student/sort?sortBy=${sort_field}&order=${sort_type}`)
+        //     .then(response => response.json())
+        //     .then(data => {
+        //         reload(data);
+        //     })
+        //     .catch(error => {
+        //         console.error('Error sorting students:', error);
+        //     });
+
+        // Sử dụng jQuery để gọi API
+        $.ajax({
+            url: '/api/NhanVien/sort',
+            type: 'GET',
+            data: { sortBy: sort_field, order: sort_type },
+            success: function (data) {
+                var dsnv = JSON.parse(data);
+                reload(dsnv);
+            },
+            error: function (xhr, status, error) {
+                console.error('Error sorting NhanVien:', error);
+            }
+        });
+    }
+</script>
