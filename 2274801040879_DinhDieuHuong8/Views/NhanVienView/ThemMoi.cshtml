@@ -22,11 +22,6 @@
                 <span class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label for="Cccd">CCCD</label>
-                <input type="text" id="Cccd" name="Cccd" class="form-control" required>
-                <span class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label for="Hodem">Họ đệm</label>
                 <input type="text" id="Hodem" name="Hodem" class="form-control" required>
                 <span class="text-danger"></span>
@@ -39,6 +34,11 @@
             <div class="form-group">
                 <label for="Nickname">Nickname</label>
                 <input type="text" id="Nickname" name="Nickname" class="form-control" required>
+                <span class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="Cccd">CCCD</label>
+                <input type="text" id="Cccd" name="Cccd" class="form-control" required>
                 <span class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -68,20 +68,20 @@
 
         function submitNhanVien() {
             const tt = document.getElementById('Tt').value;
-            const cccd = document.getElementById('Cccd').value;
             const hodem = document.getElementById('Hodem').value;
             const ten = document.getElementById('Ten').value;
             const nickname = document.getElementById('Nickname').value;
+            const cccd = document.getElementById('Cccd').value;
             const email = document.getElementById('Email').value;
             const dienthoai = document.getElementById('Dienthoai').value;
             const chucvu = document.getElementById('ChucVu').value;
 
             const nv = {
                 Tt: tt,
-                Cccd: cccd,
                 Hodem: hodem,
                 Ten: ten,
                 Nickname: nickname,
+                Cccd: cccd,
                 Email: email,
                 Dienthoai: dienthoai,
                 ChucVu: chucvu,

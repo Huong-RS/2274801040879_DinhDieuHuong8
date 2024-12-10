@@ -1,0 +1,78 @@
+﻿﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<h2>Chi tiết Sản Phẩm</h2>
+
+<div id="detailSanPhamForm">
+        <div class="form-group">
+            <label for="Tt">TT</label>
+            <input type="text" id="Tt" name="Tt" class="form-control" required>
+            <span class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="Masp">Mã sản phẩm</label>
+            <input type="text" id="Masp" name="Masp" class="form-control" required>
+            <span class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="Tensp">Tên sản phẩm</label>
+            <input type="text" id="Tensp" name="Tensp" class="form-control" required>
+            <span class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="Gia">Giá</label>
+            <input type="text" id="Gia" name="Gia" class="form-control" required>
+            <span class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="Soluong">Số lượng</label>
+            <input type="text" id="Soluong" name="Soluong" class="form-control" required>
+            <span class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="Daban">Đã bán</label>
+            <input type="email" id="Daban" name="Daban" class="form-control" required>
+            <span class="text-danger"></span>
+        </div>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const pathArray = window.location.pathname.split('/');
+        const tt = pathArray[pathArray.length - 1];
+
+        // Check if 'tt' is correctly retrieved
+        if (!tt) {
+            console.error('Error: Missing or ispalid "tt" parameter in URL');
+            return;
+        }
+
+        fetch(`/api/SanPham/${tt}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById('Tt').value = data.Tt;
+                document.getElementById('Masp').value = data.Masp;
+                document.getElementById('Tensp').value = data.Tensp;
+                document.getElementById('Gia').value = data.Gia;
+                document.getElementById('Soluong').value = data.Soluong;
+                document.getElementById('Daban').value = data.Daban;
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    });
+</script>

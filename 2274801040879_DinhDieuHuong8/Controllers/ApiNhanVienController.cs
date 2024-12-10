@@ -13,7 +13,7 @@ namespace _2274801040879_DinhDieuHuong8.Controllers
 
         public ApiNhanVienController()
         {
-            _nvActions = new NhanVienActions(); // Khởi tạo SinhVienActions
+            _nvActions = new NhanVienActions(); // Khởi tạo NhanVienActions
         }
 
         // GET: api/<StudentController>
@@ -38,8 +38,6 @@ namespace _2274801040879_DinhDieuHuong8.Controllers
                 var isString = propertyType == typeof(string);
                 // Kiểm tra xem thứ tự sắp xếp có phải là giảm dần không
                 var isDesc = order.ToLower() == "des";
-
-                // Thực hiện sắp xếp dựa trên các điều kiện trên
                 dsNhanVien = isDesc
                     ? isString
                         // Nếu giảm dần và thuộc tính là chuỗi, sắp xếp giảm dần theo chuỗi
@@ -52,11 +50,11 @@ namespace _2274801040879_DinhDieuHuong8.Controllers
                         // Nếu tăng dần và thuộc tính không phải là chuỗi, sắp xếp tăng dần theo số
                         : dsNhanVien.OrderBy(nv => Convert.ToDouble(nv.GetType().GetProperty(sortBy).GetValue(nv))).ToList();
             }
-
             var opt = new JsonSerializerOptions() { WriteIndented = true };
             string strJson = JsonSerializer.Serialize<IList<NhanVien>>(dsNhanVien, opt);
             return strJson;
         }
+
 
         // GET api/<StudentController>/5
         [HttpGet("{id}")]
@@ -70,15 +68,15 @@ namespace _2274801040879_DinhDieuHuong8.Controllers
 
         // POST api/<StudentController>
         //[HttpPost]
-        //public IActionResult Post([FromBody] SinhVien sv)
+        //public IActionResult Post([FromBody] NhanVien nv)
         //{
         //    if (!ModelState.IsValid)
         //    {
         //        return BadRequest(ModelState);
         //    }
 
-        //    _svActions.Add(sv);
-        //    return CreatedAtAction(nameof(Get), new { id = sv.Tt }, sv);
+        //    _nvActions.Add(nv);
+        //    return CreatedAtAction(nameof(Get), new { id = nv.Tt }, nv);
         //}
 
 
@@ -98,32 +96,32 @@ namespace _2274801040879_DinhDieuHuong8.Controllers
 
         // PUT api/<StudentController>/5
         //[HttpPut("{id}")]
-        //public IActionResult Put(int id, [FromBody] SinhVien sv)
+        //public IActionResult Put(int id, [FromBody] NhanVien nv)
         //{
         //    if (!ModelState.IsValid)
         //    {
         //        return BadRequest(ModelState);
         //    }
 
-        //    var existing_sv = _svActions.GetByID(id);
-        //    if (existing_sv == null)
+        //    var existing_nv = _nvActions.GetByID(id);
+        //    if (existing_nv == null)
         //    {
-        //        return NotFound(new { error = "SinhVien not found" });
+        //        return NotFound(new { error = "NhanVien not found" });
         //    }
 
-        //    // Update the existing SinhVien with new values
-        //    existing_sv.Tt = sv.Tt;
-        //    existing_sv.Hodem = sv.Hodem;
-        //    existing_sv.Ten = sv.Ten;
-        //    existing_sv.Cccd = sv.Cccd;
-        //    existing_sv.Nickname = sv.Nickname;
-        //    existing_sv.Email = sv.Email;
-        //    existing_sv.Dienthoai = sv.Dienthoai;
-        //    existing_sv.Diem_tichluy = sv.Diem_tichluy;
-        //    existing_sv.Diem_renluyen = sv.Diem_renluyen;
+        //    // Update the existing NhanVien with new values
+        //    existing_nv.Tt = nv.Tt;
+        //    existing_nv.Hodem = nv.Hodem;
+        //    existing_nv.Ten = nv.Ten;
+        //    existing_nv.Cccd = nv.Cccd;
+        //    existing_nv.Nickname = nv.Nickname;
+        //    existing_nv.Email = nv.Email;
+        //    existing_nv.Dienthoai = nv.Dienthoai;
+        //    existing_nv.Diem_tichluy = nv.Diem_tichluy;
+        //    existing_nv.Diem_renluyen = nv.Diem_renluyen;
         //    // Add other properties as needed
 
-        //    _svActions.Update(existing_sv);
+        //    _nvActions.Update(existing_nv);
 
         //    return NoContent(); // 204 No Content
         //}
@@ -142,15 +140,15 @@ namespace _2274801040879_DinhDieuHuong8.Controllers
             var existing_nv = _nvActions.GetByID(id);
             if (existing_nv == null)
             {
-                return JsonSerializer.Serialize(new { error = "SinhVien not found" });
+                return JsonSerializer.Serialize(new { error = "NhanVien not found" });
             }
 
-            // Update the existing SinhVien with new values
+            // Update the existing NhanVien with new values
             existing_nv.Tt = nv.Tt;
             existing_nv.Hodem = nv.Hodem;
             existing_nv.Ten = nv.Ten;
-            existing_nv.Cccd = nv.Cccd;
             existing_nv.Nickname = nv.Nickname;
+            existing_nv.Cccd = nv.Cccd;
             existing_nv.Email = nv.Email;
             existing_nv.Dienthoai = nv.Dienthoai;
             existing_nv.ChucVu = nv.ChucVu;
@@ -166,13 +164,13 @@ namespace _2274801040879_DinhDieuHuong8.Controllers
         //[HttpDelete("{id}")]
         //public IActionResult Delete(int id)
         //{
-        //    var existing_sv = _svActions.GetByID(id);
-        //    if (existing_sv == null)
+        //    var existing_nv = _nvActions.GetByID(id);
+        //    if (existing_nv == null)
         //    {
-        //        return NotFound(new { error = "SinhVien not found" });
+        //        return NotFound(new { error = "NhanVien not found" });
         //    }
 
-        //    _svActions.DeleteByID(id);
+        //    _nvActions.DeleteByID(id);
 
         //    return NoContent(); // 204 No Content
         //}
@@ -206,7 +204,7 @@ namespace _2274801040879_DinhDieuHuong8.Controllers
                 _nvActions.DeleteAll();
             }
 
-            return JsonSerializer.Serialize(new { message = "All SinhVien records deleted successfully" });
+            return JsonSerializer.Serialize(new { message = "All NhanVien records deleted successfully" });
         }
     }
 }

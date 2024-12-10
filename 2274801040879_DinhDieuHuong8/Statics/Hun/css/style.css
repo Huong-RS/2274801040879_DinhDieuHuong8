@@ -70,10 +70,10 @@ body {
 
 /*header section*/
 .hero_area {
-  height: 100vh;
-  background-color: #b5caee;
-  background-image: url(../images/123.jpg);
-  background-size: cover;
+    height: 100vh;
+    background-color: #b5caee;
+    background-image: url(../images/hero-bg.jpg);
+    background-size: cover;
 }
 
 .sub_page .hero_area {

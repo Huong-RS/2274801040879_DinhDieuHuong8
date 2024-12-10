@@ -8,19 +8,18 @@ using _2274801040879_DinhDieuHuong8.Models;
 
 namespace _2274801040879_DinhDieuHuong8.Models
 {
-    public class NhanVienActions
+    public class SanPhamActions
     {
         // Khai báo đường dẫn file excel
-        private string filePath = @"D:\ASP.NET\2274801040879_DinhDieuHuong8vv\2274801040879_DinhDieuHuong8\Data\ds_nhanvien.xlsx";
+        private string filePath = @"D:\ASP.NET\2274801040879_DinhDieuHuong8vv\2274801040879_DinhDieuHuong8\Data\ds_sanpham.xlsx";
         private FileInfo GetFileExcel()
         {
             return new FileInfo(filePath);
         }
 
-        // Lấy tất cả các sinh viên (GetAll)
-        public List<NhanVien> GetAll()
+        public List<SanPham> GetAll()
         {
-            var ds_nv = new List<NhanVien>();
+            var ds_sp = new List<SanPham>();
 
             // Thiết lập LicenseContext
             //ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
@@ -38,28 +37,27 @@ namespace _2274801040879_DinhDieuHuong8.Models
                 {
                     // Ex Row Data: 0 |   1   |    2       | 3  | ....
                     // Ex Row Data: 1 | 11234 | Nguyễn Văn | An | ....
-                    NhanVien nv = new NhanVien();
-                    nv.Tt = Int32.Parse(worksheet.Cells[row, 1].Text);
-                    nv.Hodem = worksheet.Cells[row, 2].Text;
-                    nv.Ten = worksheet.Cells[row, 3].Text;
-                    nv.Nickname = worksheet.Cells[row, 4].Text;
-                    nv.Cccd = worksheet.Cells[row, 5].Text;
-                    nv.Email = worksheet.Cells[row, 6].Text;
-                    nv.Dienthoai = worksheet.Cells[row, 7].Text;
-                    nv.ChucVu = worksheet.Cells[row, 8].Text;
+                    SanPham sp = new SanPham();
+                    sp.Tt = Int32.Parse(worksheet.Cells[row, 1].Text);
+                    sp.Masp = worksheet.Cells[row, 2].Text;
+                    sp.Tensp = worksheet.Cells[row, 3].Text;
+                    sp.Gia = worksheet.Cells[row, 4].Text;
+                    sp.Soluong = worksheet.Cells[row, 5].Text;
+                    sp.Daban = worksheet.Cells[row, 6].Text;
+                   
 
-                    ds_nv.Add(nv);
+                    ds_sp.Add(sp);
                 }
             }
 
-            return ds_nv;
+            return ds_sp;
         }
 
         // Lấy thông chi tiết của một nhân viên (GetByID)
-        public NhanVien GetByID(int id)
+        public SanPham GetByID(int id)
         {
             var file_excel = GetFileExcel();
-            NhanVien nv = null;
+            SanPham sp = null;
 
             using (var package = new ExcelPackage(file_excel))
             {
@@ -70,27 +68,26 @@ namespace _2274801040879_DinhDieuHuong8.Models
                 {
                     if (Int32.Parse(worksheet.Cells[row, 1].Text) == id) // Kiểm tra ID
                     {
-                        nv = new NhanVien
+                        sp = new SanPham
                         {
                             Tt = id,
-                            Hodem = worksheet.Cells[row, 2].Text,
-                            Ten = worksheet.Cells[row, 3].Text,
-                            Nickname = worksheet.Cells[row, 4].Text,
-                            Cccd = worksheet.Cells[row, 5].Text,
-                            Email = worksheet.Cells[row, 6].Text,
-                            Dienthoai = worksheet.Cells[row, 7].Text,
-                            ChucVu = worksheet.Cells[row, 8].Text,
+                            Masp = worksheet.Cells[row, 2].Text,
+                            Tensp = worksheet.Cells[row, 3].Text,
+                            Gia = worksheet.Cells[row, 4].Text,
+                            Soluong = worksheet.Cells[row, 5].Text,
+                            Daban = worksheet.Cells[row, 6].Text,
+                            
                         };
                         break; // Dừng vòng lặp khi tìm thấy nhân viên
                     }
                 }
             }
 
-            return nv; // Trả về nhan viên hoặc null nếu không tìm thấy
+            return sp; // Trả về nhan viên hoặc null nếu không tìm thấy
         }
 
         // Thêm (Add)
-        public void Add(NhanVien nv)
+        public void Add(SanPham sp)
         {
             var file_excel = GetFileExcel(); // Sử dụng phương thức để lấy FileInfo
 
@@ -100,21 +97,20 @@ namespace _2274801040879_DinhDieuHuong8.Models
                 var rowCount = worksheet.Dimension.Rows;
 
                 // Thêm sinh viên mới vào hàng tiếp theo
-                worksheet.Cells[rowCount + 1, 1].Value = nv.Tt;
-                worksheet.Cells[rowCount + 1, 2].Value = nv.Hodem;
-                worksheet.Cells[rowCount + 1, 3].Value = nv.Ten;
-                worksheet.Cells[rowCount + 1, 4].Value = nv.Nickname;
-                worksheet.Cells[rowCount + 1, 5].Value = nv.Cccd;
-                worksheet.Cells[rowCount + 1, 6].Value = nv.Email;
-                worksheet.Cells[rowCount + 1, 7].Value = nv.Dienthoai;
-                worksheet.Cells[rowCount + 1, 8].Value = nv.ChucVu;
+                worksheet.Cells[rowCount + 1, 1].Value = sp.Tt;
+                worksheet.Cells[rowCount + 1, 2].Value = sp.Masp;
+                worksheet.Cells[rowCount + 1, 3].Value = sp.Tensp;
+                worksheet.Cells[rowCount + 1, 4].Value = sp.Gia;
+                worksheet.Cells[rowCount + 1, 5].Value = sp.Soluong;
+                worksheet.Cells[rowCount + 1, 6].Value = sp.Daban;
+              
 
                 package.Save(); // Lưu thay đổi vào tệp
             }
         }
 
         // Cập nhật (UpdateByID)
-        public void Update(NhanVien nv)
+        public void Update(SanPham sp)
         {
             var file_excel = GetFileExcel(); // Sử dụng phương thức để lấy FileInfo
 
@@ -125,17 +121,15 @@ namespace _2274801040879_DinhDieuHuong8.Models
 
                 for (int row = 2; row <= rowCount; row++)
                 {
-                    if (Int32.Parse(worksheet.Cells[row, 1].Text) == nv.Tt) // Kiểm tra ID
+                    if (Int32.Parse(worksheet.Cells[row, 1].Text) == sp.Tt) // Kiểm tra ID
                     {
                         // Cập nhật thông tin sinh viên
-                        worksheet.Cells[row, 2].Value = nv.Hodem;
-                        worksheet.Cells[row, 3].Value = nv.Ten;
-                        worksheet.Cells[row, 4].Value = nv.Nickname;
-                        worksheet.Cells[row, 5].Value = nv.Cccd;
-                        worksheet.Cells[row, 6].Value = nv.Email;
-                        worksheet.Cells[row, 7].Value = nv.Dienthoai;
-                        worksheet.Cells[row, 8].Value= nv.ChucVu;
-
+                        worksheet.Cells[row, 2].Value = sp.Masp;
+                        worksheet.Cells[row, 3].Value = sp.Tensp;
+                        worksheet.Cells[row, 4].Value = sp.Gia;
+                        worksheet.Cells[row, 5].Value = sp.Soluong;
+                        worksheet.Cells[row, 6].Value = sp.Daban;
+                       
                         break; // Dừng vòng lặp khi đã cập nhật
                     }
                 }

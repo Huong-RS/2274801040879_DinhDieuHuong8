@@ -1,0 +1,207 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<h2>Danh sách Sản phẩm </h2>
+
+<div>
+    <button class="btn btn-success btn-sm" id="San-pham-add">Thêm mới</button>
+</div>
+
+
+@*
+    <button class="btn btn-success btn-sm" id="Nhan-vien-sort" onclick="sort_asc()">Sắp xếp</button>
+    *@
+
+<div id="San-pham-list">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>TT</th>
+                <th>MaSp</th>
+                <th>TenSp</th>
+                <th>Gia</th>
+                <th>Soluong</th>
+                <th>Daban</th>
+                <th>Hành động</th>
+            </tr>
+            <tr>
+                <th></th>
+                <th></th>
+                <th style="white-space: nowrap;">
+                    <button class="btn btn-success btn-sm" onclick="sort('Tensp','asc')">↓</button>
+                    <button class="btn btn-success btn-sm" onclick="sort('Ten','des')">↑</button>
+                </th>
+                <th></th>
+                <th style="white-space: nowrap;">
+                    <button class="btn btn-success btn-sm" onclick="oder('Soluong','asc')">↓</button>
+                    <button class="btn btn-success btn-sm" onclick="oder('Soluong','des')">↑</button>
+                </th>
+                <th></th>
+                <th></th>
+                <th>  </th>
+                <th> </th>
+            </tr>
+        </thead>
+        <tbody id="San-pham-list-body"></tbody>
+    </table>
+</div>
+
+@* <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script> *@
+
+@section Scripts {
+    <script src='@Url.Content("../statics/js/jquery-3.7.1.min.js")'></script>
+}
+
+
+
+<script>
+    let dssp = [];
+    fetch('/api/SanPham')
+        .then(response => response.json())
+        .then(data => {
+            dssp = data;
+            const SanPhamListContainer = document.getElementById('San-pham-list-body');
+            SanPhamListContainer.innerHTML = '';
+
+            data.forEach(SanPham => {
+                const SanPhamItem = document.createElement('tr');
+                SanPhamItem.innerHTML = `
+                                <td>${SanPham.Tt}</td>
+                                <td>${SanPham.Masp}</td>
+                                <td>${SanPham.Tensp}</td>
+                                <td>${SanPham.Gia}</td>
+                                <td>${SanPham.Soluong}</td>
+                                <td>${SanPham.Daban}</td>
+                             
+                                <td>
+                                    <button class="btn btn-info btn-sm" onclick="viewDetail(${SanPham.Tt})">Xem chi tiết</button>
+                                    <button class="btn btn-warning btn-sm" onclick="editSanPham(${SanPham.Tt})">Chỉnh sửa</button>
+                                    <button class="btn btn-danger btn-sm" onclick="deleteSanPham(${SanPham.Tt})">Xóa</button>
+                                </td>
+                                `;
+
+                SanPhamListContainer.appendChild(SanPhamItem);
+            });
+        })
+        .catch(error => console.error('Error:', error));
+
+    document.getElementById('San-pham-add').addEventListener('click',
+        function () {
+            window.location.href = '/SanPhamView/themmoi';
+        });
+
+    function viewDetail(tt) {
+        window.location.href = `/SanPhamView/chitiet/${tt}`;
+    }
+
+    function editSanPham(tt) {
+        window.location.href = `/SanPhamView/chinhsua/${tt}`;
+    }
+
+    function deleteSanPham(tt) {
+        if (confirm('Bạn có chắc chắn muốn xóa Sản phẩm này?')) {
+            fetch(`/api/SanPham/${tt}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message === 'Delete successful') {
+                        alert('Nhân viên đã được xóa thành công!');
+                        console.log("Xoa thanh công")
+                        window.location.href = '/SanPhamView/Index1';
+                    } else {
+                        alert('Không thể xóa nhân viên này. ' + data.error);
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        }
+    }
+    function sort(sort_field, sort_type) {
+        dssp.sort((a, b) => {
+            // Kiểm tra xem giá trị của trường sắp xếp có phải là chuỗi không
+            if (typeof a[sort_field] === 'string') {
+                // Nếu kiểu sắp xếp là giảm dần
+                if (sort_type === "des") {
+                    // So sánh chuỗi và trả về kết quả để sắp xếp giảm dần
+                    return b[sort_field].toLowerCase().localeCompare(a[sort_field].toLowerCase());
+                } else {
+                    // Nếu kiểu sắp xếp không phải giảm dần (tức là tăng dần), so sánh chuỗi và trả về kết quả để sắp xếp tăng dần
+                    return a[sort_field].toLowerCase().localeCompare(b[sort_field].toLowerCase());
+                }
+            } else {
+                // Nếu giá trị của trường sắp xếp không phải là chuỗi (tức là số), so sánh trực tiếp để sắp xếp
+                if (sort_type === "des") {
+                    // Sắp xếp giảm dần
+                    return b[sort_field] - a[sort_field];
+                } else {
+                    // Sắp xếp tăng dần
+                    return a[sort_field] - b[sort_field];
+                }
+            }
+        });
+        console.log(dssp);
+
+        reload(dssp);
+    }
+
+
+    function reload(dssp) {
+        $("#San-pham-list-body").empty();
+
+        const SanPhamListSort = document.getElementById('San-pham-list-body');
+        SanPhamListSort.innerHTML = '';
+
+        dssp.forEach(SanPham => {
+            const SanPhamItem = document.createElement('tr');
+            SanPhamItem.innerHTML = `
+                  <td>${SanPham.Tt}</td>
+                                    <td>${SanPham.Masp}</td>
+                                    <td>${SanPham.Tensp}</td>
+                                    <td>${SanPham.Gia}</td>
+                                    <td>${SanPham.Soluong}</td>
+                                    <td>${SanPham.Daban}</td>
+
+                                        <td>
+                                        <button class="btn btn-info btn-sm" onclick="viewDetail(${SanPham.Tt})">Xem chi tiết</button>
+                                        <button class="btn btn-warning btn-sm" onclick="editSanPham(${SanPham.Tt})">Chỉnh sửa</button>
+                                        <button class="btn btn-danger btn-sm" onclick="deleteSanPham(${SanPham.Tt})">Xóa</button>
+                                    </td>
+                                    `;
+            SanPhamListSort.appendChild(SanPhamItem);
+        });
+    }
+
+    // Gọi qua API để sắp xếp
+    function oder(sort_field, sort_type) {
+        // // Sử dụng Fetch để gọi API
+        // fetch(`/api/student/sort?sortBy=${sort_field}&order=${sort_type}`)
+        //     .then(response => response.json())
+        //     .then(data => {
+        //         reload(data);
+        //     })
+        //     .catch(error => {
+        //         console.error('Error sorting students:', error);
+        //     });
+
+        // Sử dụng jQuery để gọi API
+        $.ajax({
+            url: '/api/SanPham/sort',
+            type: 'GET',
+            data: { sortBy: sort_field, order: sort_type },
+            success: function (data) {
+                var dssp = JSON.parse(data);
+                reload(dssp);
+            },
+            error: function (xhr, status, error) {
+                console.error('Error sorting SanPham:', error);
+            }
+        });
+    }
+</script>
